@@ -8,7 +8,7 @@
 Summary:	Windows Registry "hive" extraction library
 Name:		hivex
 Version:	1.3.1
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
@@ -154,9 +154,13 @@ rm -rf $RPM_BUILD_ROOT
 %files -n perl-hivex
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/hivexregedit
+%dir %{perl_vendorarch}/Win
+%dir %{perl_vendorarch}/Win/Hivex
 %{perl_vendorarch}/Win/Hivex.pm
 %{perl_vendorarch}/Win/Hivex/Regedit.pm
 %{perl_vendorarch}/auto/Win/Hivex/Hivex.bs
+%dir %{perl_vendorarch}/auto/Win
+%dir %{perl_vendorarch}/auto/Win/Hivex
 %attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
 %{_mandir}/man1/hivexregedit.1*
 %{_mandir}/man3/Win::Hivex.3pm.gz
@@ -174,6 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n ocaml-hivex-devel
 %defattr(644,root,root,755)
+%dir %{_libdir}/ocaml/hivex
 %{_libdir}/ocaml/hivex/META
 %{_libdir}/ocaml/hivex/hivex.cmi
 %{_libdir}/ocaml/hivex/hivex.cmx
