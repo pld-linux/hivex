@@ -27,7 +27,7 @@ BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	perl(IO::Stringy)
 BuildRequires:	python
 BuildRequires:	python-devel
-BuildRequires:	rpm(macros) >= 1.527
+BuildRequires:	rpmbuild(macros) >= 1.527
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
