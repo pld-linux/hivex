@@ -7,12 +7,12 @@
 %include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
 Name:		hivex
-Version:	1.3.1
-Release:	2
+Version:	1.3.3
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	fa38e8ea348c750046b4f34c573e0c32
+# Source0-md5:	4ce781121f92e0f317db5ced5f55fda8
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	libtool
@@ -21,7 +21,7 @@ BuildRequires:	readline-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	ocaml
 BuildRequires:	ocaml-findlib-devel
-BuildRequires:	perl
+BuildRequires:	perl-base
 BuildRequires:	perl(Test::More)
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	perl(IO::Stringy)
@@ -163,8 +163,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorarch}/auto/Win/Hivex
 %attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
 %{_mandir}/man1/hivexregedit.1*
-%{_mandir}/man3/Win::Hivex.3pm.gz
-%{_mandir}/man3/Win::Hivex::Regedit.3pm.gz
+%{_mandir}/man3/Win::Hivex.3pm.*
+%{_mandir}/man3/Win::Hivex::Regedit.3pm.*
 
 %files -n python-hivex
 %defattr(644,root,root,755)
