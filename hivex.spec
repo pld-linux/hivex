@@ -7,12 +7,12 @@
 %include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
 Name:		hivex
-Version:	1.3.3
+Version:	1.3.6
 Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	4ce781121f92e0f317db5ced5f55fda8
+# Source0-md5:	87f6101c0cd1f7954367323326f34201
 BuildRequires:	automake
 BuildRequires:	autoconf
 BuildRequires:	libtool
