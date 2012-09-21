@@ -1,6 +1,4 @@
 #
-# TODO: ruby bindings
-#
 # Conditional build:
 %bcond_without	static_libs	# don't build static libraries
 #
@@ -14,13 +12,13 @@ License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
 # Source0-md5:	87f6101c0cd1f7954367323326f34201
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
+BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	libtool
-BuildRequires:	libxml2-devel
+BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	ocaml
 BuildRequires:	ocaml-findlib
-#-devel
 BuildRequires:	perl-ExtUtils-MakeMaker
 BuildRequires:	perl-IO-stringy
 BuildRequires:	perl-Test-Simple
@@ -30,6 +28,8 @@ BuildRequires:	python
 BuildRequires:	python-devel
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.527
+BuildRequires:	ruby-devel
+BuildRequires:	ruby-rake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -114,15 +114,25 @@ Python bindings for hivex library.
 %description -n python-hivex -l pl.UTF-8
 Wiązania Pythona do biblioteki hivex.
 
+%package -n ruby-hivex
+Summary:	Ruby bindings for hivex library
+Summary(pl.UTF-8):	Wiązania języka Ruby do biblioteki hivex
+Group:		Development/Languages
+Requires:	%{name} = %{version}-%{release}
+
+%description -n ruby-hivex
+Ruby bindings for hivex library.
+
+%description -n ruby-hivex -l pl.UTF-8
+Wiązania języka Ruby do biblioteki hivex.
+
 %prep
 %setup -q
 
 %build
 %configure \
-	ac_cv_lib_ruby_ruby_init=no \
-	ac_cv_prog_RAKE=no \
-	%{__enable_disable static_libs static} \
-	--disable-silent-rules
+	--disable-silent-rules \
+	%{__enable_disable static_libs static}
 
 %{__make} \
 	INSTALLDIRS=vendor
@@ -210,3 +220,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/libhivexmod.so
 %{py_sitedir}/hivex.py[co]
+
+%files -n ruby-hivex
+%defattr(644,root,root,755)
+%attr(755,root,root) %{ruby_sitearchdir}/_hivex.so
+%{ruby_sitelibdir}/hivex.rb
