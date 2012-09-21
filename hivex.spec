@@ -6,6 +6,7 @@
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
+Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
 Version:	1.3.6
 Release:	1
@@ -13,20 +14,21 @@ License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
 # Source0-md5:	87f6101c0cd1f7954367323326f34201
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	libtool
-BuildRequires:	perl-tools-pod
-BuildRequires:	readline-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	ocaml
-BuildRequires:	ocaml-findlib-devel
+BuildRequires:	ocaml-findlib
+#-devel
+BuildRequires:	perl-ExtUtils-MakeMaker
+BuildRequires:	perl-IO-stringy
+BuildRequires:	perl-Test-Simple
 BuildRequires:	perl-base
-BuildRequires:	perl(Test::More)
-BuildRequires:	perl(ExtUtils::MakeMaker)
-BuildRequires:	perl(IO::Stringy)
+BuildRequires:	perl-tools-pod
 BuildRequires:	python
 BuildRequires:	python-devel
+BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.527
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -34,6 +36,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Hivex is a library for extracting the contents of Windows Registry
 "hive" files. It is designed to be secure against buggy or malicious
 registry files.
+
+%description -l pl.UTF-8
+Hivex to biblioteka do wydobywania zawartości plików "hive" Rejestru
+Windows. Została zaprojektowana w celu ochrony przez błędnymi lub
+niebezpiecznymi plikami rejestru.
 
 %package devel
 Summary:	Header files for hivex library
@@ -59,41 +66,53 @@ Static hivex library.
 %description static -l pl.UTF-8
 Statyczna biblioteka hivex.
 
-%package -n perl-hivex
-Summary:	Perl bindings for hivex library
-Group:		Development/Languages/Perl
-Requires:	%{name} = %{version}-%{release}
-
-%description -n perl-hivex
-Perl bindings for hivex library.
-
-%package -n python-hivex
-Summary:	Python bindings for hivex library
-Group:		Development/Languages/Python
-Requires:	%{name} = %{version}-%{release}
-
-%description -n python-hivex
-Python bindings for hivex library.
-
 %package -n ocaml-hivex
 Summary:	OCaml bindings for hivex library
+Summary(pl.UTF-8):	Wiązania OCamla do biblioteki hivex
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description -n ocaml-hivex
 OCaml bindings for hivex library.
 
+%description -n ocaml-hivex -l pl.UTF-8
+Wiązania OCamla do biblioteki hivex.
+
 %package -n ocaml-hivex-devel
-Summary:	Header files for ocamlhivex library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ocaml-hivex
+Summary:	Development files for hivex OCaml bindings
+Summary(pl.UTF-8):	Pliki programistyczne wiązań OCamla do biblioteki hivex
 Group:		Development/Libraries
 Requires:	ocaml-hivex = %{version}-%{release}
 
 %description -n ocaml-hivex-devel
-Header files for ocaml-hivex library.
+Development files for hivex OCaml bindings.
 
 %description -n ocaml-hivex-devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki ocaml-hivex.
+Pliki programistyczne wiązań OCamla do biblioteki hivex.
+
+%package -n perl-hivex
+Summary:	Perl bindings for hivex library
+Summary(pl.UTF-8):	Wiązania Perla do biblioteki hivex
+Group:		Development/Languages/Perl
+Requires:	%{name} = %{version}-%{release}
+
+%description -n perl-hivex
+Perl bindings for hivex library.
+
+%description -n perl-hivex -l pl.UTF-8
+Wiązania Perla do biblioteki hivex.
+
+%package -n python-hivex
+Summary:	Python bindings for hivex library
+Summary(pl.UTF-8):	Wiązania Pythona do biblioteki hivex
+Group:		Development/Languages/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python-hivex
+Python bindings for hivex library.
+
+%description -n python-hivex -l pl.UTF-8
+Wiązania Pythona do biblioteki hivex.
 
 %prep
 %setup -q
@@ -118,6 +137,10 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la \
 	$RPM_BUILD_ROOT%{py_sitedir}/*.la
 
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
+
 %find_lang %{name}
 
 %clean
@@ -140,7 +163,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/libhivex.so
+%attr(755,root,root) %{_libdir}/libhivex.so
 %{_includedir}/hivex.h
 %{_pkgconfigdir}/hivex.pc
 %{_mandir}/man3/hivex.3*
@@ -151,29 +174,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libhivex.a
 %endif
 
-%files -n perl-hivex
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/hivexregedit
-%dir %{perl_vendorarch}/Win
-%dir %{perl_vendorarch}/Win/Hivex
-%{perl_vendorarch}/Win/Hivex.pm
-%{perl_vendorarch}/Win/Hivex/Regedit.pm
-%{perl_vendorarch}/auto/Win/Hivex/Hivex.bs
-%dir %{perl_vendorarch}/auto/Win
-%dir %{perl_vendorarch}/auto/Win/Hivex
-%attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
-%{_mandir}/man1/hivexregedit.1*
-%{_mandir}/man3/Win::Hivex.3pm.*
-%{_mandir}/man3/Win::Hivex::Regedit.3pm.*
-
-%files -n python-hivex
-%defattr(644,root,root,755)
-%{py_sitedir}/hivex.py
-%attr(755,root,root) %{py_sitedir}/libhivexmod.so
-
 %files -n ocaml-hivex
 %defattr(644,root,root,755)
-%{_libdir}/ocaml/stublibs/dllmlhivex.so
+%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllmlhivex.so
 %{_libdir}/ocaml/stublibs/dllmlhivex.so.owner
 
 %files -n ocaml-hivex-devel
@@ -187,3 +190,23 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/hivex/mlhivex.a
 %{_libdir}/ocaml/hivex/mlhivex.cma
 %{_libdir}/ocaml/hivex/mlhivex.cmxa
+
+%files -n perl-hivex
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/hivexregedit
+%dir %{perl_vendorarch}/Win
+%dir %{perl_vendorarch}/Win/Hivex
+%{perl_vendorarch}/Win/Hivex.pm
+%{perl_vendorarch}/Win/Hivex/Regedit.pm
+%dir %{perl_vendorarch}/auto/Win
+%dir %{perl_vendorarch}/auto/Win/Hivex
+%{perl_vendorarch}/auto/Win/Hivex/Hivex.bs
+%attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
+%{_mandir}/man1/hivexregedit.1*
+%{_mandir}/man3/Win::Hivex.3pm.*
+%{_mandir}/man3/Win::Hivex::Regedit.3pm.*
+
+%files -n python-hivex
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py_sitedir}/libhivexmod.so
+%{py_sitedir}/hivex.py[co]
