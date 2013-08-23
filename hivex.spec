@@ -6,12 +6,12 @@
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
-Version:	1.3.7
-Release:	3
+Version:	1.3.8
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	61c1fbc8ec47633523da72ce51fc1b24
+# Source0-md5:	6ac6f5d082ee5cd14a02ca9982cc26d7
 Patch0:		ruby-vendor-not-site.patch
 URL:		http://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
@@ -26,6 +26,7 @@ BuildRequires:	perl-IO-stringy
 BuildRequires:	perl-Test-Simple
 BuildRequires:	perl-base
 BuildRequires:	perl-tools-pod
+BuildRequires:	pkgconfig
 BuildRequires:	python
 BuildRequires:	python-devel
 BuildRequires:	readline-devel
