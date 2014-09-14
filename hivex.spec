@@ -215,7 +215,6 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorarch}/Win/Hivex/Regedit.pm
 %dir %{perl_vendorarch}/auto/Win
 %dir %{perl_vendorarch}/auto/Win/Hivex
-%{perl_vendorarch}/auto/Win/Hivex/Hivex.bs
 %attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
 %{_mandir}/man1/hivexregedit.1*
 %{_mandir}/man3/Win::Hivex.3pm.*
