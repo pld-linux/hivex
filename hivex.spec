@@ -1,6 +1,8 @@
+# TODO: __pycache__ in python3-hivex
 #
 # Conditional build:
 %bcond_without	static_libs	# don't build static libraries
+%bcond_without	python3		# CPython 3 module
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
@@ -26,8 +28,12 @@ BuildRequires:	perl-Test-Simple
 BuildRequires:	perl-base
 BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
-BuildRequires:	python
-BuildRequires:	python-devel
+BuildRequires:	python >= 2
+BuildRequires:	python-devel >= 2
+%if %{with python3}
+BuildRequires:	python3 >= 1:3.2
+BuildRequires:	python3-devel >= 1:3.2
+%endif
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.527
 BuildRequires:	ruby-devel
@@ -105,16 +111,28 @@ Perl bindings for hivex library.
 Wiązania Perla do biblioteki hivex.
 
 %package -n python-hivex
-Summary:	Python bindings for hivex library
-Summary(pl.UTF-8):	Wiązania Pythona do biblioteki hivex
+Summary:	Python 2 bindings for hivex library
+Summary(pl.UTF-8):	Wiązania Pythona 2 do biblioteki hivex
 Group:		Development/Languages/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python-hivex
-Python bindings for hivex library.
+Python 2 bindings for hivex library.
 
 %description -n python-hivex -l pl.UTF-8
-Wiązania Pythona do biblioteki hivex.
+Wiązania Pythona 2 do biblioteki hivex.
+
+%package -n python3-hivex
+Summary:	Python 3 bindings for hivex library
+Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki hivex
+Group:		Development/Languages/Python
+Requires:	%{name} = %{version}-%{release}
+
+%description -n python3-hivex
+Python 3 bindings for hivex library.
+
+%description -n python3-hivex -l pl.UTF-8
+Wiązania Pythona 3 do biblioteki hivex.
 
 %package -n ruby-hivex
 Summary:	Ruby bindings for hivex library
@@ -135,6 +153,20 @@ Wiązania języka Ruby do biblioteki hivex.
 %{__aclocal}
 %{__automake}
 %{__autoconf}
+
+%if %{with python3}
+install -d build-py3
+cd build-py3
+../%configure \
+	PYTHON="%{__python3}" \
+	--disable-ocaml \
+	--disable-perl \
+	--disable-ruby
+
+%{__make}
+cd ..
+%endif
+
 %configure \
 	--disable-silent-rules \
 	%{__enable_disable static_libs static}
@@ -144,6 +176,15 @@ Wiązania języka Ruby do biblioteki hivex.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+%if %{with python3}
+# lib is needed for relink on install
+%{__make} -C build-py3/lib install \
+	DESTDIR=$RPM_BUILD_ROOT
+%{__make} -C build-py3/python install \
+	DESTDIR=$RPM_BUILD_ROOT
+%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/*.la
+%endif
 
 %{__make} install \
 	INSTALLDIRS=vendor \
@@ -225,6 +266,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py_sitedir}/libhivexmod.so
 %dir %{py_sitedir}/hivex
 %{py_sitedir}/hivex/*.py[co]
+
+%if %{with python3}
+%files -n python3-hivex
+%defattr(644,root,root,755)
+%attr(755,root,root) %{py3_sitedir}/libhivexmod.cpython-*.so
+%{py3_sitedir}/hivex
+%endif
 
 %files -n ruby-hivex
 %defattr(644,root,root,755)
