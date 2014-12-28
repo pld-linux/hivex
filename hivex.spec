@@ -17,7 +17,7 @@ Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
 URL:		http://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	gettext-devel >= 0.17
+BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	ocaml
