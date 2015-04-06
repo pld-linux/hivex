@@ -3,13 +3,19 @@
 # Conditional build:
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	python3		# CPython 3 module
+%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
+
+%ifarch x32
+# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
+%undefine	with_ocaml_opt
+%endif
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
 Version:	1.3.11
-Release:	1
+Release:	2
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
@@ -240,12 +246,14 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ocaml/hivex
 %{_libdir}/ocaml/hivex/META
 %{_libdir}/ocaml/hivex/hivex.cmi
-%{_libdir}/ocaml/hivex/hivex.cmx
 %{_libdir}/ocaml/hivex/hivex.mli
 %{_libdir}/ocaml/hivex/libmlhivex.a
-%{_libdir}/ocaml/hivex/mlhivex.a
 %{_libdir}/ocaml/hivex/mlhivex.cma
+%if %{with ocaml_opt}
+%{_libdir}/ocaml/hivex/hivex.cmx
+%{_libdir}/ocaml/hivex/mlhivex.a
 %{_libdir}/ocaml/hivex/mlhivex.cmxa
+%endif
 
 %files -n perl-hivex
 %defattr(644,root,root,755)
