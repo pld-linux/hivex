@@ -5,8 +5,7 @@
 %bcond_without	python3		# CPython 3 module
 %bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
 
-%ifarch x32
-# not yet available on x32 (ocaml 4.02.1), remove when upstream will support it
+%ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
 %endif
 #
@@ -14,12 +13,12 @@
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
-Version:	1.3.11
-Release:	3
+Version:	1.3.13
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	be99b2db9913eab10b9b39219cec55a9
+# Source0-md5:	a4c9cb138c0cb839759c54b59e52793f
 URL:		http://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -266,8 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{perl_vendorarch}/auto/Win/Hivex
 %attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
 %{_mandir}/man1/hivexregedit.1*
-%{_mandir}/man3/Win::Hivex.3pm.*
-%{_mandir}/man3/Win::Hivex::Regedit.3pm.*
+%{_mandir}/man3/Win::Hivex.3pm*
+%{_mandir}/man3/Win::Hivex::Regedit.3pm*
 
 %files -n python-hivex
 %defattr(644,root,root,755)
