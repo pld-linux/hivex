@@ -14,7 +14,7 @@ Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
 Version:	1.3.13
-Release:	4
+Release:	5
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
@@ -164,6 +164,7 @@ install -d build-py3
 cd build-py3
 ../%configure \
 	PYTHON="%{__python3}" \
+	--with-python-installdir=%{py3_sitedir} \
 	--disable-ocaml \
 	--disable-perl \
 	--disable-ruby
@@ -174,6 +175,7 @@ cd ..
 
 %configure \
 	--disable-silent-rules \
+	--with-python-installdir=%{py_sitedir} \
 	%{__enable_disable static_libs static}
 
 %{__make} \
