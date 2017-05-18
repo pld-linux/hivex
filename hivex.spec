@@ -4,6 +4,7 @@
 %bcond_without	static_libs	# don't build static libraries
 %bcond_without	python3		# CPython 3 module
 %bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
+%bcond_without  ruby        # skip ruby bindings
 
 %ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
@@ -41,8 +42,10 @@ BuildRequires:	python3-devel >= 1:3.2
 %endif
 BuildRequires:	readline-devel
 BuildRequires:	rpmbuild(macros) >= 1.527
+%if %{with ruby}
 BuildRequires:	ruby-devel
 BuildRequires:	ruby-rake
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -283,7 +286,9 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/hivex
 %endif
 
+%if %{with ruby}
 %files -n ruby-hivex
 %defattr(644,root,root,755)
 %attr(755,root,root) %{ruby_vendorarchdir}/_hivex.so
 %{ruby_vendorlibdir}/hivex.rb
+%endif
