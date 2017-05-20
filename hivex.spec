@@ -1,10 +1,9 @@
-# TODO: __pycache__ in python3-hivex
 #
 # Conditional build:
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static library
 %bcond_without	python3		# CPython 3 module
-%bcond_without	ocaml_opt	# skip building native optimized binaries (bytecode is always built)
-%bcond_without  ruby        # skip ruby bindings
+%bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
+%bcond_without  ruby		# Ruby bindings
 
 %ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
@@ -41,7 +40,7 @@ BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-devel >= 1:3.2
 %endif
 BuildRequires:	readline-devel
-BuildRequires:	rpmbuild(macros) >= 1.527
+BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with ruby}
 BuildRequires:	ruby-devel
 BuildRequires:	ruby-rake
@@ -170,7 +169,8 @@ cd build-py3
 	--with-python-installdir=%{py3_sitedir} \
 	--disable-ocaml \
 	--disable-perl \
-	--disable-ruby
+	--disable-ruby \
+	--disable-silent-rules
 
 %{__make}
 cd ..
@@ -193,6 +193,9 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 %{__make} -C build-py3/python install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 %{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/*.la
 %endif
 
