@@ -9,7 +9,6 @@
 %undefine	with_ocaml_opt
 %endif
 #
-%include	/usr/lib/rpm/macros.perl
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
