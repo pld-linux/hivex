@@ -13,7 +13,7 @@ Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
 Version:	1.3.14
-Release:	10
+Release:	11
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
@@ -154,6 +154,9 @@ Wiązania języka Ruby do biblioteki hivex.
 
 %prep
 %setup -q
+
+%{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+perl(\s|$),#!%{__perl}\1,' \
+      regedit/hivexregedit
 
 %build
 %{__aclocal}
