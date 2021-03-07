@@ -5,20 +5,20 @@
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without  ruby		# Ruby bindings
 
-%ifnarch %{ix86} %{x8664} arm aarch64 ppc sparc sparcv9
+%ifnarch %{ix86} %{x8664} %{arm} aarch64 ppc sparc sparcv9
 %undefine	with_ocaml_opt
 %endif
 #
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
-Version:	1.3.14
-Release:	12
+Version:	1.3.19
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
-Source0:	http://libguestfs.org/download/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	9fb5ed4525d30a84b216a05150be1558
-URL:		http://libguestfs.org/
+Source0:	https://download.libguestfs.org/hivex/%{name}-%{version}.tar.gz
+# Source0-md5:	bfbce53beb2a2d8ef29cbdfec5157633
+URL:		https://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	gettext-tools >= 0.17
