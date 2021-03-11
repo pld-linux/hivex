@@ -2,6 +2,7 @@
 # Conditional build:
 %bcond_without	static_libs	# static library
 %bcond_without	python3		# CPython 3 module
+%bcond_without	ocaml		# OCaml bindings
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
 %bcond_without  ruby		# Ruby bindings
 
@@ -24,8 +25,10 @@ BuildRequires:	automake
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2.0
+%if %{with ocaml}
 BuildRequires:	ocaml
 BuildRequires:	ocaml-findlib
+%endif
 BuildRequires:	perl-ExtUtils-MakeMaker
 BuildRequires:	perl-IO-stringy
 BuildRequires:	perl-Test-Simple
@@ -181,6 +184,7 @@ cd ..
 %configure \
 	--disable-silent-rules \
 	--with-python-installdir=%{py_sitedir} \
+	%{__enable_disable ocaml} \
 	%{__enable_disable static_libs static}
 
 %{__make} \
@@ -245,6 +249,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libhivex.a
 %endif
 
+%if %{with ocaml}
 %files -n ocaml-hivex
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/ocaml/stublibs/dllmlhivex.so
@@ -262,6 +267,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/ocaml/hivex/hivex.cmx
 %{_libdir}/ocaml/hivex/mlhivex.a
 %{_libdir}/ocaml/hivex/mlhivex.cmxa
+%endif
 %endif
 
 %files -n perl-hivex
