@@ -13,12 +13,12 @@
 Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
-Version:	1.3.19
-Release:	9
+Version:	1.3.21
+Release:	1
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://download.libguestfs.org/hivex/%{name}-%{version}.tar.gz
-# Source0-md5:	bfbce53beb2a2d8ef29cbdfec5157633
+# Source0-md5:	1b9168c6454ba21c469990d90e4b93b5
 URL:		https://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
