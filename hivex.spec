@@ -42,7 +42,8 @@ BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-devel >= 1:3.2
 %endif
 BuildRequires:	readline-devel
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpm-perlprov
+BuildRequires:	rpmbuild(macros) >= 1.745
 %if %{with ruby}
 BuildRequires:	ruby-devel
 BuildRequires:	ruby-rake
