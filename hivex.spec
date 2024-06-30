@@ -160,7 +160,7 @@ Wiązania języka Ruby do biblioteki hivex.
 %setup -q
 
 %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+perl(\s|$),#!%{__perl}\1,' \
-      regedit/hivexregedit
+	regedit/hivexregedit
 
 %build
 %{__aclocal}
@@ -183,6 +183,7 @@ cd ..
 %endif
 
 %configure \
+	PYTHON="%{__python}" \
 	--disable-silent-rules \
 	--with-python-installdir=%{py_sitedir} \
 	%{__enable_disable ocaml} \
