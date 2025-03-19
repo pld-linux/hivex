@@ -14,7 +14,7 @@ Summary:	Windows Registry "hive" extraction library
 Summary(pl.UTF-8):	Biblioteka do wydobywania danych z plików "hive" Rejestru Windows
 Name:		hivex
 Version:	1.3.24
-Release:	3
+Release:	4
 License:	LGPL v2.1
 Group:		Libraries
 Source0:	https://download.libguestfs.org/hivex/%{name}-%{version}.tar.gz
@@ -43,7 +43,7 @@ BuildRequires:	python3-devel >= 1:3.2
 %endif
 BuildRequires:	readline-devel
 BuildRequires:	rpm-perlprov
-BuildRequires:	rpmbuild(macros) >= 1.745
+BuildRequires:	rpmbuild(macros) >= 2.043
 %if %{with ruby}
 BuildRequires:	ruby-devel
 BuildRequires:	ruby-rake
@@ -170,7 +170,8 @@ Wiązania języka Ruby do biblioteki hivex.
 %if %{with python3}
 install -d build-py3
 cd build-py3
-../%configure \
+%define	configuredir	..
+%configure \
 	PYTHON="%{__python3}" \
 	--with-python-installdir=%{py3_sitedir} \
 	--disable-ocaml \
@@ -182,6 +183,7 @@ cd build-py3
 cd ..
 %endif
 
+%undefine	configuredir
 %configure \
 	PYTHON="%{__python}" \
 	--disable-silent-rules \
