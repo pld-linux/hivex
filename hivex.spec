@@ -181,9 +181,9 @@ cd build-py3
 
 %{__make}
 cd ..
+%undefine	configuredir
 %endif
 
-%undefine	configuredir
 %configure \
 	PYTHON="%{__python}" \
 	--disable-silent-rules \
