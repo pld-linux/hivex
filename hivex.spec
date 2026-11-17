@@ -1,6 +1,7 @@
 #
 # Conditional build:
 %bcond_without	static_libs	# static library
+%bcond_without	python2		# CPython 2 module
 %bcond_without	python3		# CPython 3 module
 %bcond_without	ocaml		# OCaml bindings
 %bcond_without	ocaml_opt	# OCaml native optimized binaries (bytecode is always built)
@@ -22,8 +23,8 @@ Source0:	https://download.libguestfs.org/hivex/%{name}-%{version}.tar.gz
 URL:		https://libguestfs.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	libtool
+BuildRequires:	gettext-tools >= 1.0
+BuildRequires:	libtool >= 2:2
 BuildRequires:	libxml2-devel >= 2.0
 %if %{with ocaml}
 BuildRequires:	ocaml
@@ -35,8 +36,10 @@ BuildRequires:	perl-Test-Simple
 BuildRequires:	perl-base
 BuildRequires:	perl-tools-pod
 BuildRequires:	pkgconfig
+%if %{with python2}
 BuildRequires:	python >= 2
 BuildRequires:	python-devel >= 2
+%endif
 %if %{with python3}
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	python3-devel >= 1:3.2
@@ -64,7 +67,7 @@ niebezpiecznymi plikami rejestru.
 Summary:	Header files for hivex library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki hivex
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description devel
 Header files for hivex library.
@@ -76,7 +79,7 @@ Pliki nagłówkowe biblioteki hivex.
 Summary:	Static hivex library
 Summary(pl.UTF-8):	Statyczna biblioteka hivex
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel%{?_isa} = %{version}-%{release}
 
 %description static
 Static hivex library.
@@ -88,7 +91,7 @@ Statyczna biblioteka hivex.
 Summary:	OCaml bindings for hivex library
 Summary(pl.UTF-8):	Wiązania OCamla do biblioteki hivex
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description -n ocaml-hivex
 OCaml bindings for hivex library.
@@ -100,7 +103,7 @@ Wiązania OCamla do biblioteki hivex.
 Summary:	Development files for hivex OCaml bindings
 Summary(pl.UTF-8):	Pliki programistyczne wiązań OCamla do biblioteki hivex
 Group:		Development/Libraries
-Requires:	ocaml-hivex = %{version}-%{release}
+Requires:	ocaml-hivex%{?_isa} = %{version}-%{release}
 
 %description -n ocaml-hivex-devel
 Development files for hivex OCaml bindings.
@@ -112,7 +115,7 @@ Pliki programistyczne wiązań OCamla do biblioteki hivex.
 Summary:	Perl bindings for hivex library
 Summary(pl.UTF-8):	Wiązania Perla do biblioteki hivex
 Group:		Development/Languages/Perl
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description -n perl-hivex
 Perl bindings for hivex library.
@@ -124,7 +127,7 @@ Wiązania Perla do biblioteki hivex.
 Summary:	Python 2 bindings for hivex library
 Summary(pl.UTF-8):	Wiązania Pythona 2 do biblioteki hivex
 Group:		Development/Languages/Python
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description -n python-hivex
 Python 2 bindings for hivex library.
@@ -136,7 +139,7 @@ Wiązania Pythona 2 do biblioteki hivex.
 Summary:	Python 3 bindings for hivex library
 Summary(pl.UTF-8):	Wiązania Pythona 3 do biblioteki hivex
 Group:		Development/Languages/Python
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description -n python3-hivex
 Python 3 bindings for hivex library.
@@ -148,7 +151,7 @@ Wiązania Pythona 3 do biblioteki hivex.
 Summary:	Ruby bindings for hivex library
 Summary(pl.UTF-8):	Wiązania języka Ruby do biblioteki hivex
 Group:		Development/Languages
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %description -n ruby-hivex
 Ruby bindings for hivex library.
@@ -163,17 +166,19 @@ Wiązania języka Ruby do biblioteki hivex.
 	regedit/hivexregedit
 
 %build
-%{__aclocal}
-%{__automake}
+%{__libtoolize}
+%{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
+%{__automake}
 
-%if %{with python3}
-install -d build-py3
-cd build-py3
+%if %{with python2}
+install -d build-py2
+cd build-py2
 %define	configuredir	..
 %configure \
-	PYTHON="%{__python3}" \
-	--with-python-installdir=%{py3_sitedir} \
+	PYTHON="%{__python}" \
+	--with-python-installdir=%{py_sitedir} \
 	--disable-ocaml \
 	--disable-perl \
 	--disable-ruby \
@@ -185,10 +190,11 @@ cd ..
 %endif
 
 %configure \
-	PYTHON="%{__python}" \
+	PYTHON="%{__python3}" \
 	--disable-silent-rules \
-	--with-python-installdir=%{py_sitedir} \
+	--with-python-installdir=%{py3_sitedir} \
 	%{__enable_disable ocaml} \
+	%{!?with_python3:--disable-python} \
 	%{__enable_disable static_libs static}
 
 %{__make} \
@@ -197,28 +203,30 @@ cd ..
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%if %{with python3}
+%if %{with python2}
 # lib is needed for relink on install
-%{__make} -C build-py3/lib install \
+%{__make} -C build-py2/lib install \
 	DESTDIR=$RPM_BUILD_ROOT
-%{__make} -C build-py3/python install \
+%{__make} -C build-py2/python install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
-%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
-%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/*.la
+%py_comp $RPM_BUILD_ROOT%{py_sitedir}
+%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
+%py_postclean
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/*.la
 %endif
 
 %{__make} install \
 	INSTALLDIRS=vendor \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la \
-	$RPM_BUILD_ROOT%{py_sitedir}/*.la
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_postclean
+%if %{with python3}
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
+%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/*.la
+%endif
 
 %find_lang %{name}
 
@@ -230,19 +238,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc README.md TODO
+%doc README.md SECURITY TODO
 %attr(755,root,root) %{_bindir}/hivexget
 %attr(755,root,root) %{_bindir}/hivexml
 %attr(755,root,root) %{_bindir}/hivexsh
-%attr(755,root,root) %{_libdir}/libhivex.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libhivex.so.0
+%{_libdir}/libhivex.so.*.*.*
+%ghost %{_libdir}/libhivex.so.0
 %{_mandir}/man1/hivexget.1*
 %{_mandir}/man1/hivexml.1*
 %{_mandir}/man1/hivexsh.1*
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libhivex.so
+%{_libdir}/libhivex.so
 %{_includedir}/hivex.h
 %{_pkgconfigdir}/hivex.pc
 %{_mandir}/man3/hivex.3*
@@ -256,7 +264,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with ocaml}
 %files -n ocaml-hivex
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/ocaml/stublibs/dllmlhivex.so
+%{_libdir}/ocaml/stublibs/dllmlhivex.so
 %{_libdir}/ocaml/stublibs/dllmlhivex.so.owner
 
 %files -n ocaml-hivex-devel
@@ -283,27 +291,29 @@ rm -rf $RPM_BUILD_ROOT
 %{perl_vendorarch}/Win/Hivex/Regedit.pm
 %dir %{perl_vendorarch}/auto/Win
 %dir %{perl_vendorarch}/auto/Win/Hivex
-%attr(755,root,root) %{perl_vendorarch}/auto/Win/Hivex/Hivex.so
+%{perl_vendorarch}/auto/Win/Hivex/Hivex.so
 %{_mandir}/man1/hivexregedit.1*
 %{_mandir}/man3/Win::Hivex.3pm*
 %{_mandir}/man3/Win::Hivex::Regedit.3pm*
 
+%if %{with python2}
 %files -n python-hivex
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py_sitedir}/libhivexmod.so
+%{py_sitedir}/libhivexmod.so
 %dir %{py_sitedir}/hivex
 %{py_sitedir}/hivex/*.py[co]
+%endif
 
 %if %{with python3}
 %files -n python3-hivex
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py3_sitedir}/libhivexmod.cpython-*.so
+%{py3_sitedir}/libhivexmod.cpython-*.so
 %{py3_sitedir}/hivex
 %endif
 
 %if %{with ruby}
 %files -n ruby-hivex
 %defattr(644,root,root,755)
-%attr(755,root,root) %{ruby_vendorarchdir}/_hivex.so
+%{ruby_vendorarchdir}/_hivex.so
 %{ruby_vendorlibdir}/hivex.rb
 %endif
